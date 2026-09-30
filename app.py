@@ -11,19 +11,19 @@ st.set_page_config(
 # PALETA DE CORES OFICIAIS DOS PARTIDOS
 # -----------------------------------------------------------------------------
 CORES_PARTIDOS = {
-    "PT": "#CC0000",  # Vermelho
-    "MDB": "#008000",  # Laranja Vivo
-    "PP": "#004080",  # Azul Claro
-    "PSD": "#FF9900",  # Azul
-    "PL": "#223B72",  # Azul Marinho
-    "Republicanos": "#00A896",  # Verde Água
+    "PT": "#FF0000",  # Vermelho
+    "MDB": "#FF8C00",  # Laranja
+    "PP": "#800080",  # Roxo
+    "PSD": "#1E90FF",  # Azul
+    "PL": "#000000",  # Preto
+    "Republicanos": "#00CED1",  # Ciano
     "PV": "#2E7D32",  # Verde
-    "Solidariedade": "#FF5722",  # Laranja Vivo
-    "PC do B": "#8B0000",  # Vermelho Escuro
-    "PSB": "#E53935",  # Vermelho Claro
-    "PDT": "#1E88E5",  # Vermelho
-    "PSOL": "#FFD600",  # Amarelo
-    "UNIÃO": "#002B49",  # Azul Escuro
+    "Solidariedade": "#FFD700",  # Amarelo
+    "PC do B": "#FF00FF",  # Magenta
+    "PSB": "#808080",  # Cinza
+    "PDT": "#8B4513",  # Marrom
+    "PSOL": "#FF69B4",  # Rosa
+    "UNIÃO": "#F5F5DC",  # Bege
 }
 
 # -----------------------------------------------------------------------------
