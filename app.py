@@ -71,7 +71,7 @@ else:
   url_tse = st.sidebar.text_input(
       "URL da API do TSE",
       value=(
-          "https://resultados.tse.jus.br/oficial/ele2026/divulgacao/oficial/pi/dados/pi-c0005-e002026-v.json"
+          "https://resultados.tse.jus.br/oficial/ele2026/6259/dados/pi/pi-c0005-e006259-u.json"
       ),
   )
   st.sidebar.info("Cole o link oficial do TSE no dia da eleição.")
