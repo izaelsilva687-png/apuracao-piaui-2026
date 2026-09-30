@@ -12,7 +12,7 @@ st.set_page_config(
 # -----------------------------------------------------------------------------
 CORES_PARTIDOS = {
     "PT": "#CC0000",  # Vermelho
-    "MDB": "#008000",  "#FF5722",  # Laranja Vivo
+    "MDB": "#008000",  # Laranja Vivo
     "PP": "#004080",  # Azul Claro
     "PSD": "#FF9900",  # Azul
     "PL": "#223B72",  # Azul Marinho
