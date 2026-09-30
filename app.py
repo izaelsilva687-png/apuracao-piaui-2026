@@ -1,17 +1,18 @@
-import streamlit as st
 import pandas as pd
 import requests
+import streamlit as st
 
 # Configuração da página e layout
 st.set_page_config(
-    page_title="Apuração Eleições 2026 - Piauí",
-    page_icon="🗳️",
-    layout="wide"
+    page_title="Apuração Eleições 2026 - Piauí", page_icon="🗳️", layout="wide"
 )
 
 # Estilização do cabeçalho
 st.title("🗳️ Painel de Apuração — Deputado Estadual (PI)")
-st.caption("Projeção em tempo real da bancada de 30 cadeiras na Assembleia Legislativa do Piauí")
+st.caption(
+    "Projeção em tempo real da bancada de 30 cadeiras na Assembleia"
+    " Legislativa do Piauí"
+)
 
 # -----------------------------------------------------------------------------
 # DADOS DE SIMULAÇÃO (Substituídos pela API do TSE no dia)
@@ -51,17 +52,49 @@ DADOS_SIMULADOS = [
 
 # Configuração da Barra Lateral
 st.sidebar.header("⚙️ Configurações da Fonte de Dados")
-fonte = st.sidebar.radio("Selecione a Fonte de Dados:", ["Modo Simulação (Dados 2022)", "API Oficial do TSE (Ao Vivo)"])
+fonte = st.sidebar.radio(
+    "Selecione a Fonte de Dados:",
+    ["Modo Simulação (Dados 2022)", "API Oficial do TSE (Ao Vivo)"],
+)
 
 pct_apurado = "100.0%"
 if fonte == "Modo Simulação (Dados 2022)":
-    pct = st.sidebar.slider("Simular % de Urnas Apuradas", 10, 100, 100, step=10)
-    pct_apurado = f"{pct}.0%"
-    df_cand = pd.DataFrame(DADOS_SIMULADOS)
-    df_cand["votos"] = (df_cand["votos"] * (pct / 100)).astype(int)
+  pct = st.sidebar.slider("Simular % de Urnas Apuradas", 10, 100, 100, step=10)
+  pct_apurado = f"{pct}.0%"
+  df_cand = pd.DataFrame(DADOS_SIMULADOS)
+  df_cand["votos"] = (df_cand["votos"] * (pct / 100)).astype(int)
 else:
-    url_tse = st.sidebar.text_input("URL da API do TSE", value="https://resultados.tse.jus.br/oficial/ele2026/divulgacao/oficial/pi/dados/pi-c0005-e002026-v.json")
-    st.sidebar.info("Cole o link oficial do TSE no dia da eleição.")
+  url_tse = st.sidebar.text_input(
+      "URL da API do TSE",
+      value=(
+          "https://resultados.tse.jus.br/oficial/ele2026/divulgacao/oficial/pi/dados/pi-c0005-e002026-v.json"
+      ),
+  )
+  st.sidebar.info("Cole o link oficial do TSE no dia da eleição.")
+  try:
+    headers = {"User-Agent": "Mozilla/5.0"}
+    res = requests.get(url_tse, headers=headers, timeout=5)
+    dados = res.json()
+    pct_apurado = f"{dados.get('pst', '0,00')}%"
+    candidatos = []
+    for carg in dados.get("carg", []):
+      for agr in carg.get("agr", []):
+        for par in agr.get("par", []):
+          partido = par.get("sg", "")
+          for cand in par.get("cand", []):
+            candidatos.append({
+                "nome": cand.get("nmu", cand.get("nm", "")),
+                "partido": partido,
+                "votos": int(cand.get("vap", 0)),
+            })
+    if candidatos:
+      df_cand = pd.DataFrame(candidatos)
+    else:
+      df_cand = pd.DataFrame(DADOS_SIMULADOS)
+  except Exception:
+    st.sidebar.warning(
+        "API do TSE inacessível no momento. Exibindo dados simulados."
+    )
     df_cand = pd.DataFrame(DADOS_SIMULADOS)
 
 # -----------------------------------------------------------------------------
@@ -75,30 +108,43 @@ df_partidos["qp_direto"] = df_partidos["votos"].apply(lambda v: int(v / qe))
 df_partidos["sobras"] = 0
 vagas_restantes = 30 - df_partidos["qp_direto"].sum()
 
-for _ in range(vagas_restantes):
+if vagas_restantes > 0:
+  for _ in range(vagas_restantes):
     maior_media = -1
     vencedor = None
     for idx, row in df_partidos.iterrows():
-        if row["votos"] >= 0.80 * qe:
-            media = row["votos"] / (row["qp_direto"] + row["sobras"] + 1)
-            if media > maior_media:
-                maior_media = media
-                vencedor = row["partido"]
+      if row["votos"] >= 0.80 * qe:
+        media = row["votos"] / (row["qp_direto"] + row["sobras"] + 1)
+        if media > maior_media:
+          maior_media = media
+          vencedor = row["partido"]
     if vencedor:
-        df_partidos.loc[df_partidos["partido"] == vencedor, "sobras"] += 1
+      df_partidos.loc[df_partidos["partido"] == vencedor, "sobras"] += 1
 
-df_partidos["total_cadeiras"] = df_partidos["qp_direto"] + df_partidos["sobras"]
+df_partidos["total_cadeiras"] = (
+    df_partidos["qp_direto"] + df_partidos["sobras"]
+)
 
-# Seleção dos Candidatos Eleitos
+# Seleção dos Candidatos Eleitos (com conversão explícita para inteiro)
 eleitos = []
 for partido, group in df_cand.groupby("partido"):
-    cand_ord = group.sort_values(by="votos", ascending=False)
-    vagas = df_partidos.loc[df_partidos["partido"] == partido, "total_cadeiras"].values
-    if vagas > 0:
-        eleitos.append(cand_ord.head(vagas))
+  cand_ord = group.sort_values(by="votos", ascending=False)
+  vagas_vals = df_partidos.loc[
+      df_partidos["partido"] == partido, "total_cadeiras"
+  ].values
+  vagas_num = int(vagas_vals[0]) if len(vagas_vals) > 0 else 0
+  if vagas_num > 0:
+    eleitos.append(cand_ord.head(vagas_num))
 
-df_eleitos = pd.concat(eleitos).sort_values(by="votos", ascending=False).reset_index(drop=True)
-df_eleitos.index += 1
+if eleitos:
+  df_eleitos = (
+      pd.concat(eleitos)
+      .sort_values(by="votos", ascending=False)
+      .reset_index(drop=True)
+  )
+  df_eleitos.index += 1
+else:
+  df_eleitos = pd.DataFrame(columns=["nome", "partido", "votos"])
 
 # -----------------------------------------------------------------------------
 # PAINEL VISUAL
@@ -114,21 +160,31 @@ st.markdown("---")
 c_esq, c_dir = st.columns([1, 1.2])
 
 with c_esq:
-    st.subheader("📊 Divisão de Cadeiras por Partido")
-    st.bar_chart(df_partidos.set_index("partido")["total_cadeiras"])
-    st.dataframe(
-        df_partidos.sort_values(by="total_cadeiras", ascending=False).rename(
-            columns={"partido": "Partido", "votos": "Votos do Partido", "qp_direto": "Diretas", "sobras": "Sobras", "total_cadeiras": "Total Cadeiras"}
-        ),
-        hide_index=True,
-        use_container_width=True
-    )
+  st.subheader("📊 Divisão de Cadeiras por Partido")
+  st.bar_chart(df_partidos.set_index("partido")["total_cadeiras"])
+  st.dataframe(
+      df_partidos.sort_values(by="total_cadeiras", ascending=False).rename(
+          columns={
+              "partido": "Partido",
+              "votos": "Votos do Partido",
+              "qp_direto": "Diretas",
+              "sobras": "Sobras",
+              "total_cadeiras": "Total Cadeiras",
+          }
+      ),
+      hide_index=True,
+      use_container_width=True,
+  )
 
 with c_dir:
-    st.subheader("🏆 30 Deputados Estaduais Projetados")
-    st.dataframe(
-        df_eleitos[["nome", "partido", "votos"]].rename(
-            columns={"nome": "Candidato", "partido": "Partido", "votos": "Votos Individuais"}
-        ),
-        use_container_width=True
-    )
+  st.subheader("🏆 30 Deputados Estaduais Projetados")
+  st.dataframe(
+      df_eleitos[["nome", "partido", "votos"]].rename(
+          columns={
+              "nome": "Candidato",
+              "partido": "Partido",
+              "votos": "Votos Individuais",
+          }
+      ),
+      use_container_width=True,
+  )
