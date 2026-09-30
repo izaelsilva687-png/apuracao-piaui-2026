@@ -12,15 +12,15 @@ st.set_page_config(
 # -----------------------------------------------------------------------------
 CORES_PARTIDOS = {
     "PT": "#CC0000",  # Vermelho
-    "MDB": "#008000",  # Verde
-    "PP": "#004080",  # Azul Escuro
-    "PSD": "#FF9900",  # Laranja
+    "MDB": "#008000",  # Laranja
+    "PP": "#004080",  # Azul Claro
+    "PSD": "#FF9900",  # Azul
     "PL": "#223B72",  # Azul Marinho
     "Republicanos": "#00A896",  # Verde Água
     "PV": "#2E7D32",  # Verde
     "Solidariedade": "#FF5722",  # Laranja Vivo
     "PC do B": "#8B0000",  # Vermelho Escuro
-    "PSB": "#E53935",  # Vermelho
+    "PSB": "#E53935",  # Vermelho Claro
     "PDT": "#1E88E5",  # Azul
     "PSOL": "#FFD600",  # Amarelo
     "UNIÃO": "#002B49",  # Azul Escuro
