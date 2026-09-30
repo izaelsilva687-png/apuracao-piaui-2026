@@ -75,7 +75,7 @@ DADOS_ESTADUAL = [
     {"nome": "Dr. Hélio", "partido": "MDB", "votos": 38029},
     {"nome": "Wilson Capote", "partido": "PSD", "votos": 44100},
     {"nome": "Marden Menezes", "partido": "PSD", "votos": 33158},
-    {"nome": "Marta Lúcia Melo", "partido": "PDT", "votos": 3415},
+    {"nome": "Marta Lúcia Melo", "partido": "PDT", "votos": 36415},
     {"nome": "Mendes Maio", "partido": "União", "votos": 36155},
     {"nome": "Fábio Xavier", "partido": "PT", "votos": 37538},
     {"nome": "Marden Menezes", "partido": "PP", "votos": 36919},
