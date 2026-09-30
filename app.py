@@ -73,6 +73,7 @@ DADOS_ESTADUAL = [
     {"nome": "Gracinha Mão Santa", "partido": "PP", "votos": 39515},
     {"nome": "Helio Isaias", "partido": "PT", "votos": 38984},
     {"nome": "Dr. Hélio", "partido": "MDB", "votos": 38029},
+    {"nome": "Wilson Capote", "partido": "PSD", "votos": 44100},
     {"nome": "Fábio Xavier", "partido": "PT", "votos": 37538},
     {"nome": "Marden Menezes", "partido": "PP", "votos": 36919},
     {"nome": "Henrique Pires", "partido": "MDB", "votos": 36407},
