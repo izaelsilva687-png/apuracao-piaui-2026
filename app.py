@@ -2,22 +2,46 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# Configuração da página e layout
 st.set_page_config(
     page_title="Apuração Eleições 2026 - Piauí", page_icon="🗳️", layout="wide"
 )
 
-# Estilização do cabeçalho
-st.title("🗳️ Painel de Apuração — Deputado Estadual (PI)")
+# -----------------------------------------------------------------------------
+# BARRA LATERAL: SELEÇÃO DO CARGO E DA FONTE DE DADOS
+# -----------------------------------------------------------------------------
+st.sidebar.header("⚙️ Opções da Eleição")
+
+# 1. Seleção do Cargo
+cargo_selecionado = st.sidebar.selectbox(
+    "Selecione o Cargo:",
+    ["Deputado Estadual (30 vagas)", "Deputado Federal (10 vagas)"],
+)
+
+if "Estadual" in cargo_selecionado:
+  total_vagas = 30
+  codigo_cargo = "c0005"
+  titulo_cargo = "Deputado Estadual"
+else:
+  total_vagas = 10
+  codigo_cargo = "c0006"
+  titulo_cargo = "Deputado Federal"
+
+st.title(f"🗳️ Painel de Apuração — {titulo_cargo} (PI)")
 st.caption(
-    "Projeção em tempo real da bancada de 30 cadeiras na Assembleia"
-    " Legislativa do Piauí"
+    f"Projeção em tempo real das {total_vagas} cadeiras do Piauí com base nas"
+    " regras oficiais do TSE"
+)
+
+# 2. Fonte de Dados
+fonte = st.sidebar.radio(
+    "Selecione a Fonte de Dados:",
+    ["Modo Simulação (Dados 2022)", "API Oficial do TSE (Ao Vivo)"],
 )
 
 # -----------------------------------------------------------------------------
-# DADOS DE SIMULAÇÃO (Substituídos pela API do TSE no dia)
+# DADOS DE SIMULAÇÃO (2022)
 # -----------------------------------------------------------------------------
-DADOS_SIMULADOS = [
+DADOS_ESTADUAL = [
     {"nome": "Severo Eulálio", "partido": "MDB", "votos": 59133},
     {"nome": "Dr. Thales Coelho", "partido": "PP", "votos": 57761},
     {"nome": "Flávio Júnior", "partido": "PT", "votos": 55341},
@@ -28,53 +52,33 @@ DADOS_SIMULADOS = [
     {"nome": "Gustavo Neiva", "partido": "PP", "votos": 42258},
     {"nome": "Firmino Paulo", "partido": "PT", "votos": 39854},
     {"nome": "Gracinha Mão Santa", "partido": "PP", "votos": 39515},
-    {"nome": "Helio Isaias", "partido": "PT", "votos": 38984},
-    {"nome": "Dr. Hélio", "partido": "MDB", "votos": 38029},
-    {"nome": "Fábio Xavier", "partido": "PT", "votos": 37538},
-    {"nome": "Marden Menezes", "partido": "PP", "votos": 36919},
-    {"nome": "Henrique Pires", "partido": "MDB", "votos": 36407},
-    {"nome": "Fábio Novo", "partido": "PT", "votos": 35510},
-    {"nome": "Cel Carlos Augusto", "partido": "MDB", "votos": 34396},
-    {"nome": "Nerinho", "partido": "PT", "votos": 33695},
-    {"nome": "Dr. Vinicius", "partido": "PT", "votos": 33437},
-    {"nome": "Wilson Brandão", "partido": "PP", "votos": 32100},
-    {"nome": "Pastor Gessivaldo Isaias", "partido": "Republicanos", "votos": 29216},
-    {"nome": "Rubens Vieira", "partido": "PT", "votos": 28835},
-    {"nome": "Simone Pereira", "partido": "MDB", "votos": 27102},
-    {"nome": "Dr. Gil Carlos", "partido": "PT", "votos": 23805},
-    {"nome": "Warton Lacerda", "partido": "PT", "votos": 23454},
-    {"nome": "Evaldo Gomes", "partido": "Solidariedade", "votos": 20920},
-    {"nome": "Elisângela Moura", "partido": "PC do B", "votos": 20412},
-    {"nome": "Hélio Rodrigues", "partido": "PT", "votos": 20231},
-    {"nome": "Dr. Marcus Kalume", "partido": "PT", "votos": 19741},
-    {"nome": "Dr. Kalil", "partido": "PC do D", "votos": 12112},
-    {"nome": "Wilson Capote", "partido": "PSD", "votos": 40145},
-    {"nome": "Elzuila Calisto", "partido": "PT", "votos": 18670},
-    {"nome": "Moreira Franco", "partido": "Republicanos", "votos": 16145},
-    {"nome": "Rui Barbosa", "partido": "Solidariedade", "votos": 10145},
 ]
 
-# Configuração da Barra Lateral
-st.sidebar.header("⚙️ Configurações da Fonte de Dados")
-fonte = st.sidebar.radio(
-    "Selecione a Fonte de Dados:",
-    ["Modo Simulação (Dados 2022)", "API Oficial do TSE (Ao Vivo)"],
-)
+DADOS_FEDERAL = [
+    {"nome": "Júlio César", "partido": "PSD", "votos": 134863},
+    {"nome": "Francisco Costa", "partido": "PT", "votos": 129229},
+    {"nome": "Castro Neto", "partido": "MDB", "votos": 127753},
+    {"nome": "Rejane Dias", "partido": "PT", "votos": 125774},
+    {"nome": "Flávio Nogueira", "partido": "PT", "votos": 114140},
+    {"nome": "Florentino Neto", "partido": "PT", "votos": 105739},
+    {"nome": "Jadyel Alencar", "partido": "PV", "votos": 83175},
+    {"nome": "Átila Lira", "partido": "PP", "votos": 92049},
+    {"nome": "Júlio Arcoverde", "partido": "PP", "votos": 66085},
+    {"nome": "Marcos Aurélio Sampaio", "partido": "PSD", "votos": 66310},
+]
 
 pct_apurado = "100.0%"
+dados_base = DADOS_ESTADUAL if total_vagas == 30 else DADOS_FEDERAL
+
 if fonte == "Modo Simulação (Dados 2022)":
   pct = st.sidebar.slider("Simular % de Urnas Apuradas", 10, 100, 100, step=10)
   pct_apurado = f"{pct}.0%"
-  df_cand = pd.DataFrame(DADOS_SIMULADOS)
+  df_cand = pd.DataFrame(dados_base)
   df_cand["votos"] = (df_cand["votos"] * (pct / 100)).astype(int)
 else:
-  url_tse = st.sidebar.text_input(
-      "URL da API do TSE",
-      value=(
-          "https://resultados.tse.jus.br/oficial/ele2026/6259/dados/pi/pi-c0005-e006259-u.json"
-      ),
-  )
-  st.sidebar.info("Cole o link oficial do TSE no dia da eleição.")
+  url_default = f"https://resultados.tse.jus.br/oficial/ele2026/6259/dados/pi/pi-{codigo_cargo}-e006259-u.json"
+  url_tse = st.sidebar.text_input("URL da API do TSE", value=url_default)
+
   try:
     headers = {"User-Agent": "Mozilla/5.0"}
     res = requests.get(url_tse, headers=headers, timeout=5)
@@ -91,26 +95,23 @@ else:
                 "partido": partido,
                 "votos": int(cand.get("vap", 0)),
             })
-    if candidatos:
-      df_cand = pd.DataFrame(candidatos)
-    else:
-      df_cand = pd.DataFrame(DADOS_SIMULADOS)
-  except Exception:
-    st.sidebar.warning(
-        "API do TSE inacessível no momento. Exibindo dados simulados."
+    df_cand = (
+        pd.DataFrame(candidatos) if candidatos else pd.DataFrame(dados_base)
     )
-    df_cand = pd.DataFrame(DADOS_SIMULADOS)
+  except Exception:
+    st.sidebar.warning("Aguardando transmissão oficial do TSE...")
+    df_cand = pd.DataFrame(dados_base)
 
 # -----------------------------------------------------------------------------
-# CÁLCULO ELEITORAL (Quociente Eleitoral, Partidário e Sobras)
+# CÁLCULO ELEITORAL DINÂMICO (Adaptado para 30 ou 10 vagas)
 # -----------------------------------------------------------------------------
 df_partidos = df_cand.groupby("partido")["votos"].sum().reset_index()
 votos_validos = df_partidos["votos"].sum()
-qe = max(1, int(votos_validos / 30))
+qe = max(1, int(votos_validos / total_vagas))
 
 df_partidos["qp_direto"] = df_partidos["votos"].apply(lambda v: int(v / qe))
 df_partidos["sobras"] = 0
-vagas_restantes = 30 - df_partidos["qp_direto"].sum()
+vagas_restantes = total_vagas - df_partidos["qp_direto"].sum()
 
 if vagas_restantes > 0:
   for _ in range(vagas_restantes):
@@ -129,14 +130,14 @@ df_partidos["total_cadeiras"] = (
     df_partidos["qp_direto"] + df_partidos["sobras"]
 )
 
-# Seleção dos Candidatos Eleitos (com conversão explícita para inteiro)
+# Seleção dos Candidatos Eleitos
 eleitos = []
 for partido, group in df_cand.groupby("partido"):
   cand_ord = group.sort_values(by="votos", ascending=False)
   vagas_vals = df_partidos.loc[
       df_partidos["partido"] == partido, "total_cadeiras"
   ].values
-  vagas_num = int(vagas_vals[0]) if len(vagas_vals) > 0 else 0
+  vagas_num = int(vagas_vals) if len(vagas_vals) > 0 else 0
   if vagas_num > 0:
     eleitos.append(cand_ord.head(vagas_num))
 
@@ -157,14 +158,14 @@ col1, col2, col3, col4 = st.columns(4)
 col1.metric("Urnas Apuradas", pct_apurado)
 col2.metric("Votos Válidos", f"{votos_validos:,}".replace(",", "."))
 col3.metric("Quociente Eleitoral (QE)", f"{qe:,}".replace(",", "."))
-col4.metric("Total de Cadeiras", "30 Vagas")
+col4.metric("Cadeiras em Disputa", f"{total_vagas} Vagas")
 
 st.markdown("---")
 
 c_esq, c_dir = st.columns([1, 1.2])
 
 with c_esq:
-  st.subheader("📊 Divisão de Cadeiras por Partido")
+  st.subheader(f"📊 Cadeiras de {titulo_cargo} por Partido")
   st.bar_chart(df_partidos.set_index("partido")["total_cadeiras"])
   st.dataframe(
       df_partidos.sort_values(by="total_cadeiras", ascending=False).rename(
@@ -181,7 +182,7 @@ with c_esq:
   )
 
 with c_dir:
-  st.subheader("🏆 30 Deputados Estaduais Projetados")
+  st.subheader(f"🏆 {total_vagas} Deputados Projetados")
   st.dataframe(
       df_eleitos[["nome", "partido", "votos"]].rename(
           columns={
