@@ -1,4 +1,5 @@
 import pandas as pd
+import plotly.express as px
 import requests
 import streamlit as st
 
@@ -7,11 +8,29 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
+# PALETA DE CORES OFICIAIS DOS PARTIDOS
+# -----------------------------------------------------------------------------
+CORES_PARTIDOS = {
+    "PT": "#CC0000",  # Vermelho
+    "MDB": "#008000",  # Verde
+    "PP": "#004080",  # Azul Escuro
+    "PSD": "#FF9900",  # Laranja
+    "PL": "#223B72",  # Azul Marinho
+    "Republicanos": "#00A896",  # Verde Água
+    "PV": "#2E7D32",  # Verde
+    "Solidariedade": "#FF5722",  # Laranja Vivo
+    "PC do B": "#8B0000",  # Vermelho Escuro
+    "PSB": "#E53935",  # Vermelho
+    "PDT": "#1E88E5",  # Azul
+    "PSOL": "#FFD600",  # Amarelo
+    "UNIÃO": "#002B49",  # Azul Escuro
+}
+
+# -----------------------------------------------------------------------------
 # BARRA LATERAL: SELEÇÃO DO CARGO E DA FONTE DE DADOS
 # -----------------------------------------------------------------------------
 st.sidebar.header("⚙️ Opções da Eleição")
 
-# 1. Seleção do Cargo
 cargo_selecionado = st.sidebar.selectbox(
     "Selecione o Cargo:",
     ["Deputado Estadual (30 vagas)", "Deputado Federal (10 vagas)"],
@@ -32,7 +51,6 @@ st.caption(
     " regras oficiais do TSE"
 )
 
-# 2. Fonte de Dados
 fonte = st.sidebar.radio(
     "Selecione a Fonte de Dados:",
     ["Modo Simulação (Dados 2022)", "API Oficial do TSE (Ao Vivo)"],
@@ -61,19 +79,19 @@ DADOS_ESTADUAL = [
     {"nome": "Cel Carlos Augusto", "partido": "MDB", "votos": 34396},
     {"nome": "Nerinho", "partido": "PT", "votos": 33695},
     {"nome": "Dr. Vinicius", "partido": "PT", "votos": 33437},
-    {"nome": "Wilson Capote", "partido": "PSD", "votos": 40100},
+    {"nome": "Wilson Brandão", "partido": "PP", "votos": 32100},
 ]
 
 DADOS_FEDERAL = [
     {"nome": "Wilson Martins", "partido": "PSD", "votos": 48863},
-    {"nome": "Francisco Costa", "partido": "PT", "votos": 129229},
     {"nome": "Georgiano Neto", "partido": "PSD", "votos": 200863},
-    {"nome": "Capitão Fábio Abreu", "partido": "Republicanos", "votos": 20863},
-    {"nome": "Castro Neto", "partido": "MDB", "votos": 127753},
+    {"nome": "Francisco Costa", "partido": "PT", "votos": 129229},
     {"nome": "Delegado Charles", "partido": "PV", "votos": 134863},
+    {"nome": "Castro Neto", "partido": "MDB", "votos": 127753},
     {"nome": "Merlong Solano", "partido": "PT", "votos": 125774},
     {"nome": "Flávio Nogueira", "partido": "PT", "votos": 114140},
     {"nome": "Florentino Neto", "partido": "PT", "votos": 105739},
+    {"nome": "Capitão Fábio Abreu", "partido": "Republicanos", "votos": 20863},
     {"nome": "Jadyel Alencar", "partido": "PV", "votos": 83175},
     {"nome": "Átila Lira", "partido": "PP", "votos": 92049},
     {"nome": "Júlio Arcoverde", "partido": "PP", "votos": 66085},
@@ -116,7 +134,7 @@ else:
     df_cand = pd.DataFrame(dados_base)
 
 # -----------------------------------------------------------------------------
-# CÁLCULO ELEITORAL DINÂMICO
+# CÁLCULO ELEITORAL
 # -----------------------------------------------------------------------------
 df_partidos = df_cand.groupby("partido")["votos"].sum().reset_index()
 votos_validos = df_partidos["votos"].sum()
@@ -143,7 +161,7 @@ df_partidos["total_cadeiras"] = (
     df_partidos["qp_direto"] + df_partidos["sobras"]
 )
 
-# Seleção dos Candidatos Eleitos (Corrigido para NumPy array)
+# Seleção dos Candidatos Eleitos
 eleitos = []
 for partido, group in df_cand.groupby("partido"):
   cand_ord = group.sort_values(by="votos", ascending=False)
@@ -175,13 +193,37 @@ col4.metric("Cadeiras em Disputa", f"{total_vagas} Vagas")
 
 st.markdown("---")
 
-c_esq, c_dir = st.columns([1, 1.2])
+col_grafico, col_tabela = st.columns([1, 1.2])
 
-with c_esq:
+with col_grafico:
   st.subheader(f"📊 Cadeiras de {titulo_cargo} por Partido")
-  st.bar_chart(df_partidos.set_index("partido")["total_cadeiras"])
+
+  # Gráfico Colorido com Plotly
+  df_partidos_ord = df_partidos.sort_values(
+      by="total_cadeiras", ascending=False
+  )
+
+  fig = px.bar(
+      df_partidos_ord,
+      x="partido",
+      y="total_cadeiras",
+      color="partido",
+      color_discrete_map=CORES_PARTIDOS,
+      text="total_cadeiras",
+      labels={"partido": "Partido", "total_cadeiras": "Cadeiras"},
+  )
+  fig.update_traces(textposition="outside")
+  fig.update_layout(
+      showlegend=False,
+      xaxis_title="",
+      yaxis_title="Nº de Cadeiras",
+      height=380,
+  )
+
+  st.plotly_chart(fig, use_container_width=True)
+
   st.dataframe(
-      df_partidos.sort_values(by="total_cadeiras", ascending=False).rename(
+      df_partidos_ord.rename(
           columns={
               "partido": "Partido",
               "votos": "Votos do Partido",
@@ -194,7 +236,7 @@ with c_esq:
       use_container_width=True,
   )
 
-with c_dir:
+with col_tabela:
   st.subheader(f"🏆 {total_vagas} Deputados Projetados")
   st.dataframe(
       df_eleitos[["nome", "partido", "votos"]].rename(
