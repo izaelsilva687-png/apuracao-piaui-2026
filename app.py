@@ -61,14 +61,17 @@ DADOS_ESTADUAL = [
     {"nome": "Cel Carlos Augusto", "partido": "MDB", "votos": 34396},
     {"nome": "Nerinho", "partido": "PT", "votos": 33695},
     {"nome": "Dr. Vinicius", "partido": "PT", "votos": 33437},
-    {"nome": "Wilson Brandão", "partido": "PP", "votos": 32100},
+    {"nome": "Wilson Capote", "partido": "PSD", "votos": 40100},
 ]
 
 DADOS_FEDERAL = [
-    {"nome": "Júlio César", "partido": "PSD", "votos": 134863},
+    {"nome": "Wilson Martins", "partido": "PSD", "votos": 48863},
     {"nome": "Francisco Costa", "partido": "PT", "votos": 129229},
+    {"nome": "Georgiano Neto", "partido": "PSD", "votos": 200863},
+    {"nome": "Capitão Fábio Abreu", "partido": "Republicanos", "votos": 20863},
     {"nome": "Castro Neto", "partido": "MDB", "votos": 127753},
-    {"nome": "Rejane Dias", "partido": "PT", "votos": 125774},
+    {"nome": "Delegado Charles", "partido": "PV", "votos": 134863},
+    {"nome": "Merlong Solano", "partido": "PT", "votos": 125774},
     {"nome": "Flávio Nogueira", "partido": "PT", "votos": 114140},
     {"nome": "Florentino Neto", "partido": "PT", "votos": 105739},
     {"nome": "Jadyel Alencar", "partido": "PV", "votos": 83175},
