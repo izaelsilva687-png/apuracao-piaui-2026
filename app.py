@@ -47,8 +47,11 @@ DADOS_SIMULADOS = [
     {"nome": "Elisângela Moura", "partido": "PC do B", "votos": 20412},
     {"nome": "Hélio Rodrigues", "partido": "PT", "votos": 20231},
     {"nome": "Dr. Marcus Kalume", "partido": "PT", "votos": 19741},
+    {"nome": "Dr. Kalil", "partido": "PC do D", "votos": 12112},
     {"nome": "Wilson Capote", "partido": "PSD", "votos": 40145},
     {"nome": "Elzuila Calisto", "partido": "PT", "votos": 18670},
+    {"nome": "Moreira Franco", "partido": "Republicanos", "votos": 16145},
+    {"nome": "Rui Barbosa", "partido": "Solidariedade", "votos": 10145},
 ]
 
 # Configuração da Barra Lateral
