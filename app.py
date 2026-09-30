@@ -47,6 +47,7 @@ DADOS_SIMULADOS = [
     {"nome": "Elisângela Moura", "partido": "PC do B", "votos": 20412},
     {"nome": "Hélio Rodrigues", "partido": "PT", "votos": 20231},
     {"nome": "Dr. Marcus Kalume", "partido": "PT", "votos": 19741},
+    {"nome": "Wilson Capote", "partido": "PSD", "votos": 40145},
     {"nome": "Elzuila Calisto", "partido": "PT", "votos": 18670},
 ]
 
