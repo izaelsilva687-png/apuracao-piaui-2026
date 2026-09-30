@@ -52,6 +52,16 @@ DADOS_ESTADUAL = [
     {"nome": "Gustavo Neiva", "partido": "PP", "votos": 42258},
     {"nome": "Firmino Paulo", "partido": "PT", "votos": 39854},
     {"nome": "Gracinha Mão Santa", "partido": "PP", "votos": 39515},
+    {"nome": "Helio Isaias", "partido": "PT", "votos": 38984},
+    {"nome": "Dr. Hélio", "partido": "MDB", "votos": 38029},
+    {"nome": "Fábio Xavier", "partido": "PT", "votos": 37538},
+    {"nome": "Marden Menezes", "partido": "PP", "votos": 36919},
+    {"nome": "Henrique Pires", "partido": "MDB", "votos": 36407},
+    {"nome": "Fábio Novo", "partido": "PT", "votos": 35510},
+    {"nome": "Cel Carlos Augusto", "partido": "MDB", "votos": 34396},
+    {"nome": "Nerinho", "partido": "PT", "votos": 33695},
+    {"nome": "Dr. Vinicius", "partido": "PT", "votos": 33437},
+    {"nome": "Wilson Brandão", "partido": "PP", "votos": 32100},
 ]
 
 DADOS_FEDERAL = [
@@ -103,7 +113,7 @@ else:
     df_cand = pd.DataFrame(dados_base)
 
 # -----------------------------------------------------------------------------
-# CÁLCULO ELEITORAL DINÂMICO (Adaptado para 30 ou 10 vagas)
+# CÁLCULO ELEITORAL DINÂMICO
 # -----------------------------------------------------------------------------
 df_partidos = df_cand.groupby("partido")["votos"].sum().reset_index()
 votos_validos = df_partidos["votos"].sum()
@@ -130,14 +140,14 @@ df_partidos["total_cadeiras"] = (
     df_partidos["qp_direto"] + df_partidos["sobras"]
 )
 
-# Seleção dos Candidatos Eleitos
+# Seleção dos Candidatos Eleitos (Corrigido para NumPy array)
 eleitos = []
 for partido, group in df_cand.groupby("partido"):
   cand_ord = group.sort_values(by="votos", ascending=False)
   vagas_vals = df_partidos.loc[
       df_partidos["partido"] == partido, "total_cadeiras"
   ].values
-  vagas_num = int(vagas_vals) if len(vagas_vals) > 0 else 0
+  vagas_num = int(vagas_vals[0]) if len(vagas_vals) > 0 else 0
   if vagas_num > 0:
     eleitos.append(cand_ord.head(vagas_num))
 
