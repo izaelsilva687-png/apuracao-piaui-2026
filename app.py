@@ -69,7 +69,7 @@ DADOS_ESTADUAL = [
     {"nome": "João Madison", "partido": "MDB", "votos": 43832},
     {"nome": "Gustavo Neiva", "partido": "PP", "votos": 42258},
     {"nome": "Firmino Paulo", "partido": "PT", "votos": 39854},
-    {"nome": "Vitor Lima", "partido": "PL", "votos": 38854},
+    {"nome": "Vitor Lima", "partido": "PL", "votos": 41854},
     {"nome": "Gracinha Mão Santa", "partido": "PP", "votos": 39515},
     {"nome": "Helio Isaias", "partido": "PT", "votos": 38984},
     {"nome": "Dr. Hélio", "partido": "MDB", "votos": 38029},
