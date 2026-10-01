@@ -80,7 +80,7 @@ DADOS_ESTADUAL = [
     {"nome": "Fábio Xavier", "partido": "PT", "votos": 37538},
     {"nome": "Marden Menezes", "partido": "PP", "votos": 36919},
     {"nome": "Dr. Lucas", "partido": "Solidariedade", "votos": 39993},
-    {"nome": "Marlos Filho", "partido": "PV", "votos": 38337},
+    {"nome": "Marlos Filho", "partido": "PV", "votos": 40337},
     {"nome": "Jeová Alencar", "partido": "Republicanos", "votos": 39337},
     {"nome": "Pedro Alcântara", "partido": "PP", "votos": 43337},
     {"nome": "Zé Fernando", "partido": "PP", "votos": 41337},
