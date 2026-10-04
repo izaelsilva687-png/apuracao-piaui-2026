@@ -38,7 +38,7 @@ cargo_selecionado = st.sidebar.selectbox(
 
 if "Estadual" in cargo_selecionado:
   total_vagas = 30
-  codigo_cargo = "c0005"
+  codigo_cargo = "c0007"
   titulo_cargo = "Deputado Estadual"
 else:
   total_vagas = 10
@@ -60,53 +60,11 @@ fonte = st.sidebar.radio(
 # DADOS DE SIMULAÇÃO (2022)
 # -----------------------------------------------------------------------------
 DADOS_ESTADUAL = [
-    {"nome": "Severo Eulálio", "partido": "MDB", "votos": 59133},
-    {"nome": "Dr. Thales Coelho", "partido": "PP", "votos": 57761},
-    {"nome": "Flávio Júnior", "partido": "PT", "votos": 55341},
-    {"nome": "Ana Paula", "partido": "MDB", "votos": 50580},
-    {"nome": "Janainna Marques", "partido": "PT", "votos": 49692},
-    {"nome": "Limma", "partido": "PT", "votos": 46899},
-    {"nome": "João Madison", "partido": "MDB", "votos": 43832},
-    {"nome": "Gustavo Neiva", "partido": "PP", "votos": 42258},
-    {"nome": "Firmino Paulo", "partido": "PT", "votos": 39854},
-    {"nome": "Vitor Lima", "partido": "PL", "votos": 41854},
-    {"nome": "Gracinha Mão Santa", "partido": "PP", "votos": 39515},
-    {"nome": "Helio Isaias", "partido": "PT", "votos": 38984},
-    {"nome": "Dr. Hélio", "partido": "MDB", "votos": 38029},
-    {"nome": "Wilson Capote", "partido": "PSD", "votos": 50103},
-    {"nome": "Marden Menezes", "partido": "PSD", "votos": 33158},
-    {"nome": "Marta Lúcia Melo", "partido": "PDT", "votos": 41415},
-    {"nome": "Mendes Maio", "partido": "União", "votos": 43155},
-    {"nome": "Fábio Xavier", "partido": "PT", "votos": 37538},
-    {"nome": "Marden Menezes", "partido": "PP", "votos": 36919},
-    {"nome": "Dr. Lucas", "partido": "Solidariedade", "votos": 43993},
-    {"nome": "Marlos Filho", "partido": "PV", "votos": 42337},
-    {"nome": "Jeová Alencar", "partido": "Republicanos", "votos": 43337},
-    {"nome": "Pedro Alcântara", "partido": "PP", "votos": 43337},
-    {"nome": "Zé Fernando", "partido": "PP", "votos": 41337},
-    {"nome": "Henrique Pires", "partido": "MDB", "votos": 36407},
-    {"nome": "Fábio Novo", "partido": "PT", "votos": 35510},
-    {"nome": "Ávila Duarte", "partido": "PC do B", "votos": 41431},
-    {"nome": "Cel Carlos Augusto", "partido": "MDB", "votos": 34396},
-    {"nome": "Nerinho", "partido": "PT", "votos": 33695},
-    {"nome": "Dr. Vinicius", "partido": "PT", "votos": 33437},
-    {"nome": "Wilson Brandão", "partido": "PP", "votos": 32100},
+    
 ]
 
 DADOS_FEDERAL = [
-    {"nome": "Wilson Martins", "partido": "PSD", "votos": 48863},
-    {"nome": "Georgiano Neto", "partido": "PSD", "votos": 200863},
-    {"nome": "Francisco Costa", "partido": "PT", "votos": 129229},
-    {"nome": "Delegado Charles", "partido": "PV", "votos": 134863},
-    {"nome": "Castro Neto", "partido": "MDB", "votos": 127753},
-    {"nome": "Merlong Solano", "partido": "PT", "votos": 90774},
-    {"nome": "Flávio Nogueira", "partido": "PT", "votos": 114140},
-    {"nome": "Florentino Neto", "partido": "PT", "votos": 105739},
-    {"nome": "Capitão Fábio Abreu", "partido": "Republicanos", "votos": 132863},
-    {"nome": "Jadyel Alencar", "partido": "PV", "votos": 83175},
-    {"nome": "Átila Lira", "partido": "PP", "votos": 92049},
-    {"nome": "Júlio Arcoverde", "partido": "PP", "votos": 66085},
-    {"nome": "Marcos Aurélio Sampaio", "partido": "PSD", "votos": 66310},
+    
 ]
 
 pct_apurado = "100.0%"
